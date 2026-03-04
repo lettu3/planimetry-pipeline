@@ -1,0 +1,15 @@
+{
+    "playcanvas": {
+        "project_id": 1316148,
+        "project_name": "casa-foa",
+        "branch_id": ""
+    },
+    "html_modify": {
+        "cdn_url": "https://dit9akr5f3nsa.cloudfront.net",
+        "modify_indexhtml": false,
+        "title": "Docta"
+    },
+    "sftp": {
+        "remote_path": "/ruta/remota/"
+    }
+}
