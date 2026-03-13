@@ -4,7 +4,7 @@ Este repositorio contiene los scripts necesarios para automatizar el ciclo de co
 
 ## 🚀 Flujo de Trabajo (Roadmap de Scripts)
 
-El proceso de despliegue se divide en 4 scripts principales:
+El proceso de despliegue se divide en 5 scripts principales:
 
 1. **`fetch_playcanvas.ts`** *(Implementado)*
    Se encarga de conectarse a la API de PlayCanvas, solicitar la compilación del proyecto (buscando la rama "main" o "master"), esperar a que termine el job y descargar el archivo `.zip` resultante con el build.
