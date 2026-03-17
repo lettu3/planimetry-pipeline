@@ -45,13 +45,27 @@ export async function fetchPlayCanvas(){
             throw new Error("No se encontraron escenas en el proyecto.");
         }
 
-        // assertion on scene
-        const firstScene = scenesData.result[0];
-        if (!firstScene) {
-            throw new Error("Escena no encontrada");
+        // 1. Buscamos si existe una escena llamada "Main" (ignorando mayúsculas/minúsculas)
+        const mainScene = scenesData.result.find((s: any) => s.name.toLowerCase() === 'main');
+        
+        let sceneIds: number[] = [];
+
+        if (mainScene) {
+            console.log(`✅ Escena principal (Entrypoint) detectada: "${mainScene.name}" (ID: ${mainScene.id})`);
+            
+            // Filtramos las demás escenas para no duplicar la principal
+            const otherScenes = scenesData.result.filter((s: any) => s.id !== mainScene.id);
+            
+            // Construimos el array: "Main" va PRIMERA en la lista, el resto atrás
+            sceneIds = [mainScene.id, ...otherScenes.map((s: any) => s.id)];
+        } else {
+            console.warn(`⚠️ No se encontró una escena llamada "Main". Usando la primera devuelta por la API como principal.`);
+            
+            // Si no hay "Main", simplemente mapeamos todas. La [0] será el entrypoint por defecto.
+            sceneIds = scenesData.result.map((s: any) => s.id);
         }
-        const sceneId = firstScene.id;
-        console.log(`✅ Escena detectada: ID ${sceneId}`);
+
+        console.log(`📦 Total de escenas a empaquetar: ${sceneIds.length}`);
 
 
         // --- NUEVO PASO: Obtener el branch_id correcto ---
@@ -88,9 +102,9 @@ export async function fetchPlayCanvas(){
         const buildPayload: PlayCanvasAppDownloadRequest = {
             project_id: config.playcanvas.project_id,
             name: config.playcanvas.project_name,
-            scenes: [sceneId],
+            scenes: sceneIds,
             branch_id: targetBranchId, // Inyectamos el ID real de la rama
-            scripts_concatenate: false,
+            scripts_concatenate: true,
         };
 
         const buildRes = await fetch('https://playcanvas.com/api/apps/download', {
