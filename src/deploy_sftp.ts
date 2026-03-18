@@ -218,17 +218,41 @@ export async function deploySFTP(){
         if (toUpload.length > 0) {
             console.log(`📤 Subiendo ${toUpload.length} archivos...`);
             const startTime: Date = new Date();
-            const createdDirs = new Set<string>(); // Caché para no bombardear sftp.exists()
+            const createdDirs = new Map<string, Promise<void>>(); // Map de promesas para evitar race conditions
+
+            const ensureRemoteDir = async (dir: string) => {
+                // Eliminamos la línea que bloqueaba la creación del cleanRemotePath
+                
+                if (createdDirs.has(dir)) return createdDirs.get(dir);
+            
+                const promise = (async () => {
+                    const exists = await sftp.exists(dir);
+                    if (!exists) {
+                        const parentDir = dir.substring(0, dir.lastIndexOf('/'));
+                        if (parentDir && parentDir !== dir) {
+                            await ensureRemoteDir(parentDir);
+                        }
+                        console.log(`📁 Creando carpeta remota: ${dir}`);
+                        await sftp.mkdir(dir, true);
+                    }
+                })();
+            
+                createdDirs.set(dir, promise);
+                return promise;
+            };
+            // Asegurar que la carpeta base remota existe (para el primer deploy)
+            await ensureRemoteDir(cleanRemotePath);
 
             await processInBatches(toUpload, 10, async (relPath) => {
                 const localFilePath = path.join(distPath, relPath);
                 const remoteFilePath = `${cleanRemotePath}/${relPath}`;
-                const remoteFileDir = remoteFilePath.substring(0, remoteFilePath.lastIndexOf('/'));
-
-                if (remoteFileDir !== cleanRemotePath && !createdDirs.has(remoteFileDir)) {
-                    const exists = await sftp.exists(remoteFileDir);
-                    if (!exists) await sftp.mkdir(remoteFileDir, true);
-                    createdDirs.add(remoteFileDir);
+                
+                // Extraer el directorio relativo para manejar subcarpetas
+                const lastSlashIndex = relPath.lastIndexOf('/');
+                if (lastSlashIndex !== -1) {
+                    const relDir = relPath.substring(0, lastSlashIndex);
+                    const remoteFileDir = `${cleanRemotePath}/${relDir}`;
+                    await ensureRemoteDir(remoteFileDir);
                 }
 
                 await sftp.fastPut(localFilePath, remoteFilePath);
@@ -253,4 +277,6 @@ export async function deploySFTP(){
 }
 
 
-deploySFTP();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    deploySFTP();
+}

@@ -173,4 +173,7 @@ export async function fetchPlayCanvas(){
     }
 };
 
-fetchPlayCanvas();
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    fetchPlayCanvas();
+}
