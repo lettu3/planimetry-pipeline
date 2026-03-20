@@ -8,7 +8,7 @@
         "cdn_url": "https://dit9akr5f3nsa.cloudfront.net",
         "cloudfront_distribution_id": "E1IQTSWW98QM63",
         "modify_indexhtml": false,
-        "title": "Chacabuco Testing"
+        "title": "Chacabuco Testing2"
     },
     "sftp": {
         "remote_path": "html/cicdtest4/"
