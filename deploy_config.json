@@ -1,16 +1,29 @@
 {
-    "playcanvas": {
-        "project_id": 1403107,
-        "project_name": "edificio-chacabuco--edificio",
-        "branch_id": ""
-    },
-    "html_modify": {
-        "cdn_url": "https://dit9akr5f3nsa.cloudfront.net",
-        "cloudfront_distribution_id": "E1IQTSWW98QM63",
-        "modify_indexhtml": true,
-        "title": "Chacabuco Testing2"
-    },
-    "sftp": {
-        "remote_path": "html/cicdtest4/"
+  "playcanvas": {
+    "project_id": 123,
+    "project_name": "",
+    "target_branch_name": "main",
+    "branch_id": "2cd3b3a3-0a96-4aba-aba9-8035eafb6da9",
+    "update_sdk": true,
+    "sdk_cdn_link": "https://"
+  },
+  "html_modify": {
+    "cdn_url": "https:",
+    "cloudfront_distribution_id": "123",
+    "gtag-id": "",
+    "modify_indexhtml": true,
+    "branding": {
+      "title": "",
+      "description": "",
+      "keywords": "",
+      "theme_color": "#fff",
+      "canonical_url": "",
+      "logo_url": "",
+      "favicon_url": "",
+      "social_image_url": ""
     }
+  },
+  "sftp": {
+    "remote_path": "/"
+  }
 }
