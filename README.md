@@ -67,6 +67,7 @@ Ejemplo de estructura actual:
     "playcanvas": {
         "project_id": 1316148,
         "project_name": "casa-foa",
+        "target_branch_name": "master",
         "branch_id": ""
     },
     "html_modify": {
